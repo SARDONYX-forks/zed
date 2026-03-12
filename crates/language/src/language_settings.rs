@@ -10,6 +10,7 @@ use globset::{Glob, GlobMatcher, GlobSet, GlobSetBuilder};
 use gpui::{App, Modifiers, SharedString};
 use itertools::{Either, Itertools};
 use settings::{DocumentFoldingRanges, DocumentSymbols, IntoGpui, SemanticTokens};
+use text::LineEnding;
 
 pub use settings::{
     AutoIndentMode, CompletionSettingsContent, EditPredictionPromptFormat, EditPredictionProvider,
@@ -67,6 +68,8 @@ pub struct WhitespaceMap {
 pub struct LanguageSettings {
     /// How many columns a tab should occupy.
     pub tab_size: NonZeroU32,
+    /// Default line ending to use for new files and when changing the line ending of a buffer.
+    pub default_line_ending: LineEnding,
     /// Whether to indent lines using tab characters, as opposed to multiple
     /// spaces.
     pub hard_tabs: bool,
@@ -589,6 +592,7 @@ impl settings::Settings for AllLanguageSettings {
 
             LanguageSettings {
                 tab_size: settings.tab_size.unwrap(),
+                default_line_ending: settings.default_line_ending.unwrap(),
                 hard_tabs: settings.hard_tabs.unwrap(),
                 soft_wrap: settings.soft_wrap.unwrap(),
                 preferred_line_length: settings.preferred_line_length.unwrap(),
