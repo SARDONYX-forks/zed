@@ -9,6 +9,12 @@ use text::LineEnding;
 
 use crate::{DocumentFoldingRanges, DocumentSymbols, ExtendingVec, SemanticTokens, merge_from};
 
+impl merge_from::MergeFrom for LineEnding {
+    fn merge_from(&mut self, other: &Self) {
+        *self = *other;
+    }
+}
+
 /// The state of the modifier keys at some point in time
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema, MergeFrom)]
 pub struct ModifiersContent {
