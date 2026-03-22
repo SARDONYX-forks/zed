@@ -2245,10 +2245,18 @@ impl Buffer {
     {
         let old_text = self.as_rope().clone();
         let base_version = self.version();
+        let default_line_ending =
+            language_settings(self.language().map(|l| l.name()), self.file(), cx)
+                .default_line_ending;
+
         cx.background_spawn(async move {
             let old_text = old_text.to_string();
             let mut new_text = new_text.as_ref().to_owned();
-            let line_ending = LineEnding::detect(&new_text);
+            let line_ending = if new_text.contains('\n') {
+                LineEnding::detect(&new_text)
+            } else {
+                default_line_ending // New/Empty File: Use Settings
+            };
             LineEnding::normalize(&mut new_text);
             let edits = text_diff(&old_text, &new_text);
             Diff {

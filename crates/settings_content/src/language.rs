@@ -5,8 +5,15 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize, de::Error as _};
 use settings_macros::{MergeFrom, with_fallible_options};
 use std::sync::Arc;
+use text::LineEnding;
 
 use crate::{DocumentFoldingRanges, DocumentSymbols, ExtendingVec, SemanticTokens, merge_from};
+
+impl merge_from::MergeFrom for LineEnding {
+    fn merge_from(&mut self, other: &Self) {
+        *self = *other;
+    }
+}
 
 /// The state of the modifier keys at some point in time
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, JsonSchema, MergeFrom)]
@@ -433,6 +440,11 @@ pub struct LanguageSettingsContent {
     /// Default: 4
     #[schemars(range(min = 1, max = 128))]
     pub tab_size: Option<NonZeroU32>,
+    /// Default line ending to use for new files or files that contain no line endings.
+    /// Existing files retain their detected line ending.
+    ///
+    /// Default: `windows` on Windows, `unix` on other platforms.
+    pub default_line_ending: Option<LineEnding>,
     /// Whether to indent lines using tab characters, as opposed to multiple
     /// spaces.
     ///
