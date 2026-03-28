@@ -1,5 +1,5 @@
 [CmdletBinding()]
-Param(
+param(
     [Parameter()][Alias('i')][switch]$Install,
     [Parameter()][Alias('h')][switch]$Help,
     [Parameter()][Alias('a')][string]$Architecture,
@@ -22,7 +22,8 @@ $OSArchitecture = switch ([System.Runtime.InteropServices.RuntimeInformation]::O
 
 $Architecture = if ($Architecture) {
     $Architecture
-} else {
+}
+else {
     $OSArchitecture
 }
 
@@ -62,7 +63,7 @@ $env:RELEASE_CHANNEL = $channel
 Pop-Location
 
 function CheckEnvironmentVariables {
-    if(-not $env:CI) {
+    if (-not $env:CI) {
         return
     }
 
@@ -231,7 +232,7 @@ function CollectFiles {
     Move-Item -Path "$innoDir\cli.exe" -Destination "$innoDir\bin\zed.exe" -Force
     Move-Item -Path "$innoDir\zed.sh" -Destination "$innoDir\bin\zed" -Force
     Move-Item -Path "$innoDir\auto_update_helper.exe" -Destination "$innoDir\tools\auto_update_helper.exe" -Force
-    if($Architecture -eq "aarch64") {
+    if ($Architecture -eq "aarch64") {
         New-Item -Type Directory -Path "$innoDir\arm64" -Force
         Move-Item -Path ".\conpty\build\native\runtimes\arm64\OpenConsole.exe" -Destination "$innoDir\arm64\OpenConsole.exe" -Force
         Move-Item -Path ".\conpty\runtimes\win-arm64\native\conpty.dll" -Destination "$innoDir\conpty.dll" -Force
@@ -340,7 +341,7 @@ function BuildInstaller {
     }
 
     $innoArgs = @($issFilePath) + $defs
-    if($env:CI) {
+    if ($env:CI) {
         $signTool = "powershell.exe -ExecutionPolicy Bypass -File $innoDir\sign.ps1 `$f"
         $innoArgs += "/sDefaultsign=`"$signTool`""
     }
@@ -367,7 +368,7 @@ $debugStoreKey = "$env:ZED_RELEASE_CHANNEL/zed-$env:RELEASE_VERSION-$env:ZED_REL
 
 CheckEnvironmentVariables
 PrepareForBundle
-GenerateLicenses
+# GenerateLicenses
 BuildZedAndItsFriends
 BuildRemoteServer
 MakeAppx
@@ -378,7 +379,7 @@ DownloadConpty
 CollectFiles
 BuildInstaller
 
-if($env:CI) {
+if ($env:CI) {
     UploadToSentry
 }
 
