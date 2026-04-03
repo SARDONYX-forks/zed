@@ -3461,7 +3461,9 @@ impl FromAnchor for usize {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(
+    Clone, Copy, Debug, PartialEq, serde::Serialize, serde::Deserialize, schemars::JsonSchema,
+)]
 pub enum LineEnding {
     Unix,
     Windows,
